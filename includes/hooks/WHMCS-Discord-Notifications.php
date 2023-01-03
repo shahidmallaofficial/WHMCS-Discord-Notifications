@@ -148,28 +148,30 @@ if($invoiceLateFee === true):
 	});
 endif;
 
+
 if($orderAccepted === true):
-	add_hook('AcceptOrder', 1, function($vars)	{
-		$dataPacket = array(
-			'content' => $GLOBALS['discordGroupID'],
-			'username' => $GLOBALS['companyName'],
-			'avatar_url' => $GLOBALS['discordWebHookAvatar'],
-			'embeds' => array(
-				array(
-					'title' => 'Order ' . $vars['orderid'] . ' Has Been Accepted',
-					'url' => $GLOBALS['whmcsAdminURL'] . 'orders.php?action=view&id=' . $vars['orderid'],
-					'timestamp' => date(DateTime::ISO8601),
-					'description' => '',
-					'color' => $GLOBALS['discordColor'],
-					'author' => array(
-						'name' => 'Order Accepted'
-					)
-				)
-			)
-		);
-		processNotification($dataPacket);
-	});
+  add_hook('AcceptOrder', 1, function($vars) {
+    $dataPacket = array(
+      'content' => $GLOBALS['discordGroupID'],
+      'username' => $GLOBALS['companyName'],
+      'avatar_url' => $GLOBALS['discordWebHookAvatar'],
+      'embeds' => array(
+        array(
+          'title' => 'Order Accepted',
+          'url' => $GLOBALS['whmcsAdminURL'] . 'orders.php?action=view&id=' . $vars['orderid'],
+          'timestamp' => date(DateTime::ISO8601),
+          'description' => 'Order ID: ' . $vars['orderid'],
+          'color' => $GLOBALS['discordColor'],
+          'author' => array(
+            'name' => 'Order Accepted'
+          )
+        )
+      )
+    );
+    processNotification($dataPacket);
+  });
 endif;
+
 
 if($orderCancelled === true):
 	add_hook('CancelOrder', 1, function($vars) {
