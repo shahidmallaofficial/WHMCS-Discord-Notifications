@@ -73,6 +73,9 @@ $networkIssueClosed = true;         // Network Issue Closed Notification
 // Miscellaneous Notifications
 $cancellationRequest = false;       // New Cancellation Request Received Notification
 
+$serviceRenewed = true;               // Service Renewed Notification
+
+
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -549,6 +552,30 @@ if($cancellationRequest === true):
 		processNotification($dataPacket);
 	});
 endif;
+
+if($serviceRenewed === true):
+  add_hook('ServiceRenewed', 1, function($vars) {
+    $dataPacket = array(
+      'content' => $GLOBALS['discordGroupID'],
+      'username' => $GLOBALS['companyName'],
+      'avatar_url' => $GLOBALS['discordWebHookAvatar'],
+      'embeds' => array(
+        array(
+          'title' => 'Service Renewed',
+          'url' => $GLOBALS['whmcsAdminURL'] . 'invoices.php?action=edit&id=' . $vars['invoiceid'],
+          'timestamp' => date(DateTime::ISO8601),
+          'description' => 'Service ID: ' . $vars['serviceid'],
+          'color' => $GLOBALS['discordColor'],
+          'author' => array(
+            'name' => 'Service Renewed'
+          )
+        )
+      )
+    );
+    processNotification($dataPacket);
+  });
+endif;
+
 
 function processNotification($dataPacket)	{
     $curl = curl_init();
